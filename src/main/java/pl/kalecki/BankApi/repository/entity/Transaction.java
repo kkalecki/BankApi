@@ -1,6 +1,7 @@
 package pl.kalecki.BankApi.repository.entity;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -13,6 +14,7 @@ import java.time.OffsetDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class Transaction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,7 +25,9 @@ public class Transaction {
     @Column(name = "TRANSACTION_DATE")
     private OffsetDateTime dateTime;
     @Column(name = "FROM_ACCOUNT_ID")
+    //@JoinColumn(name = "FROM_ACCOUNT_ID")
     private long fromAccountId;
     @Column(name = "TO_ACCOUNT_ID")
+    //@JoinColumn(name = "TO_ACCOUNT_ID")
     private long toAccountId;
 }

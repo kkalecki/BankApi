@@ -36,4 +36,10 @@ public class UserService {
         repository.deleteById(aLong);
 
     }
+    public List<User> findAllByuserName(String name)
+    {
+        return repository.findAllByuserName(name);
+    }
+
+
 }

@@ -1,16 +1,19 @@
 package pl.kalecki.BankApi.repository.entity;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "ACCOUNTS")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,6 +25,11 @@ public class Account {
     private double balance;
     @Column(name = "USER_ID")
     private long userId;
+    @OneToMany(mappedBy = "fromAccountId")
+    List<Transaction> transactions_from;
+    @OneToMany(mappedBy = "toAccountId")
+    List<Transaction> transactions_to;
+
 //    @ManyToOne
 //    @JoinColumn(name = "USER_ID")
 //    private User user;
