@@ -18,5 +18,5 @@ public class UserResponse {
     private long id;
     private  String userName;
     private  String email;
-    private List<Account> accounts;
+    private List<Long> accounts;
 }

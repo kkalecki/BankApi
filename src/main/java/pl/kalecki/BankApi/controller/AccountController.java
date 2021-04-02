@@ -7,6 +7,7 @@ import pl.kalecki.BankApi.controller.dto.AccountResponse;
 import pl.kalecki.BankApi.controller.dto.TransactionResponse;
 import pl.kalecki.BankApi.repository.entity.Account;
 import pl.kalecki.BankApi.service.AccountService;
+import pl.kalecki.BankApi.service.mapper.AccountMapper;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,26 +18,16 @@ import java.util.stream.Collectors;
 public class AccountController {
 
     private final AccountService service;
+    private final AccountMapper mapper;
 
     @PostMapping("/account")
     public AccountResponse createAccount(@RequestBody AccountRequest accountRequest)
     {
-        Account account = Account.builder()
-                .balance(accountRequest.getBalance())
-                .currency(accountRequest.getCurrency())
-                .userId(accountRequest.getUserId())
-                .build();
+        Account account = mapper.mapAccountRequestToAccount(accountRequest);
 
         Account savedAccount = service.save(account);
 
-        AccountResponse accountResponse = AccountResponse.builder()
-                .id(savedAccount.getId())
-                .balance(savedAccount.getBalance())
-                .currency(savedAccount.getCurrency())
-                .userId(savedAccount.getUserId())
-                .transactionsFrom(account.getTransactions_from())
-                .transactionsTo(account.getTransactions_to())
-                .build();
+        AccountResponse accountResponse = mapper.mapAccountToAccountResponse(savedAccount);
         return accountResponse;
 
     }
@@ -45,15 +36,7 @@ public class AccountController {
     {
         List<Account> all = service.findAll();
 
-        List<AccountResponse> accountResponses = all.stream().map(account -> AccountResponse.builder()
-                .id(account.getId())
-                .balance(account.getBalance())
-                .currency(account.getCurrency())
-                .userId(account.getUserId())
-                .transactionsFrom(account.getTransactions_from())
-                .transactionsTo(account.getTransactions_to())
-                .build())
-                .collect(Collectors.toList());
+        List<AccountResponse> accountResponses = mapper.mapAccountsToAccountResponses(all);
 
         return accountResponses;
 
@@ -63,14 +46,7 @@ public class AccountController {
     {
         Account account = service.findById(id).orElseThrow(() -> new IllegalArgumentException("Account with this id does not exists"));
 
-        AccountResponse accountResponse = AccountResponse.builder()
-                .id(account.getId())
-                .userId(account.getUserId())
-                .currency(account.getCurrency())
-                .balance(account.getBalance())
-                .transactionsFrom(account.getTransactions_from())
-                .transactionsTo(account.getTransactions_to())
-                .build();
+        AccountResponse accountResponse = mapper.mapAccountToAccountResponse(account);
         return accountResponse;
     }
 

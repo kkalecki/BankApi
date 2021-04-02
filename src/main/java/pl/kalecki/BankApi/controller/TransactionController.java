@@ -7,6 +7,7 @@ import pl.kalecki.BankApi.controller.dto.TransactionResponse;
 import pl.kalecki.BankApi.repository.entity.Transaction;
 import pl.kalecki.BankApi.repository.entity.User;
 import pl.kalecki.BankApi.service.TransactionService;
+import pl.kalecki.BankApi.service.mapper.TransactionMapper;
 
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
@@ -18,23 +19,14 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/v1")
 public class TransactionController {
     private final TransactionService service;
+    private final TransactionMapper mapper;
 
     @PostMapping("/transaction")
     public TransactionResponse createTransaction(@RequestBody TransactionRequest transactionRequest) {
-        Transaction transaction = Transaction.builder()
-                .price(transactionRequest.getPrice())
-                .dateTime(OffsetDateTime.now())
-                .fromAccountId(transactionRequest.getFromAccountId())
-                .toAccountId(transactionRequest.getToAccountId())
-                .build();
+        Transaction transaction = mapper.mapTransactionRequestToTransaction(transactionRequest);
 
         Transaction saved_transaction = service.save(transaction);
-        TransactionResponse transactionResponse = TransactionResponse.builder()
-                .id(saved_transaction.getId())
-                .price(saved_transaction.getPrice())
-                .fromAccountId(saved_transaction.getFromAccountId())
-                .toAccountId(saved_transaction.getToAccountId())
-                .build();
+        TransactionResponse transactionResponse = mapper.mapTransactionToTransactionResponse(saved_transaction);
 
         return transactionResponse;
 
@@ -44,13 +36,7 @@ public class TransactionController {
     public List<TransactionResponse> showTransactions() {
         List<Transaction> all = service.findAll();
 
-        List<TransactionResponse> transactionResponses = all.stream().map(transaction -> TransactionResponse.builder()
-                .id(transaction.getId())
-                .price(transaction.getPrice())
-                .fromAccountId(transaction.getFromAccountId())
-                .toAccountId(transaction.getToAccountId())
-                .build())
-                .collect(Collectors.toList());
+        List<TransactionResponse> transactionResponses = mapper.mapTransactionsToTransactionResponses(all);
 
         return transactionResponses;
 
@@ -61,12 +47,7 @@ public class TransactionController {
 
         Transaction transaction = service.findById(id).orElseThrow(() -> new IllegalArgumentException("Transaction with this id does not exists"));
 
-        TransactionResponse transactionResponse = TransactionResponse.builder()
-                .id(transaction.getId())
-                .price(transaction.getPrice())
-                .fromAccountId(transaction.getFromAccountId())
-                .toAccountId(transaction.getToAccountId())
-                .build();
+        TransactionResponse transactionResponse = mapper.mapTransactionToTransactionResponse(transaction);
         return transactionResponse;
     }
 
