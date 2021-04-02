@@ -23,32 +23,25 @@ public class TransactionController {
 
     @PostMapping("/transaction")
     public TransactionResponse createTransaction(@RequestBody TransactionRequest transactionRequest) {
-        Transaction transaction = mapper.mapTransactionRequestToTransaction(transactionRequest);
 
-        Transaction saved_transaction = service.save(transaction);
-        TransactionResponse transactionResponse = mapper.mapTransactionToTransactionResponse(saved_transaction);
 
-        return transactionResponse;
+        return service.save(transactionRequest);
 
     }
 
     @GetMapping("/transactions")
     public List<TransactionResponse> showTransactions() {
-        List<Transaction> all = service.findAll();
 
-        List<TransactionResponse> transactionResponses = mapper.mapTransactionsToTransactionResponses(all);
 
-        return transactionResponses;
+        return service.findAll();
 
     }
 
     @GetMapping("/transaction")
     public TransactionResponse showTransaction(@RequestParam Long id) {
 
-        Transaction transaction = service.findById(id).orElseThrow(() -> new IllegalArgumentException("Transaction with this id does not exists"));
 
-        TransactionResponse transactionResponse = mapper.mapTransactionToTransactionResponse(transaction);
-        return transactionResponse;
+        return service.findById(id);
     }
 
     @DeleteMapping("/transaction")

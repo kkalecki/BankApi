@@ -18,41 +18,29 @@ import java.util.stream.Collectors;
 public class AccountController {
 
     private final AccountService service;
-    private final AccountMapper mapper;
 
     @PostMapping("/account")
-    public AccountResponse createAccount(@RequestBody AccountRequest accountRequest)
-    {
-        Account account = mapper.mapAccountRequestToAccount(accountRequest);
+    public AccountResponse createAccount(@RequestBody AccountRequest accountRequest) {
 
-        Account savedAccount = service.save(account);
-
-        AccountResponse accountResponse = mapper.mapAccountToAccountResponse(savedAccount);
-        return accountResponse;
+        return service.save(accountRequest);
 
     }
+
     @GetMapping("/accounts")
-    public List<AccountResponse> showAccounts()
-    {
-        List<Account> all = service.findAll();
+    public List<AccountResponse> showAccounts() {
 
-        List<AccountResponse> accountResponses = mapper.mapAccountsToAccountResponses(all);
-
-        return accountResponses;
+        return service.findAll();
 
     }
-    @GetMapping("/account")
-    public AccountResponse showAccount(@RequestParam Long id)
-    {
-        Account account = service.findById(id).orElseThrow(() -> new IllegalArgumentException("Account with this id does not exists"));
 
-        AccountResponse accountResponse = mapper.mapAccountToAccountResponse(account);
-        return accountResponse;
+    @GetMapping("/account")
+    public AccountResponse showAccount(@RequestParam Long id) {
+
+        return service.findById(id);
     }
 
     @DeleteMapping("/account")
-    public void deleteAccount(@RequestParam Long id)
-    {
+    public void deleteAccount(@RequestParam Long id) {
         service.deleteById(id);
     }
 }

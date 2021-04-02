@@ -21,48 +21,36 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/v1")
 public class UserController {
     private final UserService service;
-    private final UserMapper mapper;
 
     @PostMapping("/user")
-    public ResponseEntity<UserResponse> createUser(@RequestBody UserRequest userRequest)
-    {
+    public ResponseEntity<UserResponse> createUser(@RequestBody UserRequest userRequest) {
 
-        User user = mapper.mapUserRequestToUser(userRequest);
-        User savedUser = service.save(user);
-        UserResponse userResponse = mapper.mapUserToUserResponse(savedUser);
+        UserResponse userResponse = service.save(userRequest);
         return new ResponseEntity<>(userResponse, HttpStatus.CREATED);
 
     }
+
     @GetMapping("/users")
-    public List<UserResponse> showUsers()
-    {
-        List<User> all = service.findAll();
-        List<UserResponse> userResponses = mapper.mapUsersToUserResponses(all);
-        return userResponses;
+    public List<UserResponse> showUsers() {
+        return service.findAll();
 
     }
+
     @GetMapping("/user")
-    public UserResponse showUser(@RequestParam Long id)
-    {
-        User user = service.findById(id).orElseThrow(() -> new IllegalArgumentException("User with this id does not exists"));
-
-        UserResponse userResponse = mapper.mapUserToUserResponse(user);
-        return userResponse;
+    public UserResponse showUser(@RequestParam Long id) {
+        return service.findById(id);
     }
+
     @DeleteMapping("/user")
-    public void deleteUser(@RequestParam Long id)
-    {
+    public void deleteUser(@RequestParam Long id) {
         service.deleteById(id);
     }
 
     @GetMapping("/username")
-    public List<UserResponse> findAllByuserName(@RequestParam String name)
-    {
-        List<User> allByuserName = service.findAllByuserName(name);
-        List<UserResponse> userResponses = mapper.mapUsersToUserResponses(allByuserName);
-        return userResponses;
-    }
+    public List<UserResponse> findAllByuserName(@RequestParam String name) {
 
+        return service.findAllByuserName(name);
+    }
 
 
 }
