@@ -4,15 +4,10 @@ import lombok.Data;
 import org.springframework.web.bind.annotation.*;
 import pl.kalecki.BankApi.controller.dto.TransactionRequest;
 import pl.kalecki.BankApi.controller.dto.TransactionResponse;
-import pl.kalecki.BankApi.repository.entity.Transaction;
-import pl.kalecki.BankApi.repository.entity.User;
 import pl.kalecki.BankApi.service.TransactionService;
 import pl.kalecki.BankApi.service.mapper.TransactionMapper;
 
-import java.time.OffsetDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @Data
