@@ -44,19 +44,15 @@ public class TransactionService {
                 .orElseThrow(() -> new IllegalArgumentException("Account with this Id does not exist"));
 
         String fromAccCurrency = fromAcc.getCurrency();
-        System.out.println(fromAccCurrency);
         String toAccCurrency = toAcc.getCurrency();
-        System.out.println(toAccCurrency);
         ResponseEntity<CurrencyResponse> currencyResponse = currencyService.mapJSONtoCurrencyResponse(fromAccCurrency);
 
         double currencyRate = currencyResponse.getBody().getRates().get(toAccCurrency);
-        System.out.println(currencyRate);
 
         if (fromAcc.getBalance() < transaction.getPrice()) {
             throw new IllegalArgumentException("You do not have enough money");
         } else {
             fromAcc.setBalance(fromAcc.getBalance() - transaction.getPrice());
-            System.out.println(transaction.getPrice()*currencyRate);
             toAcc.setBalance(toAcc.getBalance() + (transaction.getPrice()*currencyRate));
 
             Transaction savedTransaction = transactionRepository.save(transaction);
